@@ -1,11 +1,14 @@
 package org.example.transaction.controller;
 
 import lombok.AllArgsConstructor;
+import org.example.stockmarket.stocks.stock.entity.Stock;
 import org.example.stockmarket.stocks.stock.service.StockService;
 import org.example.transaction.exception.AccountBalanceException;
 import org.example.transaction.exception.AccountInventoryException;
 import org.example.transaction.exception.AccountNotFoundException;
+import org.example.transaction.model.entity.Account;
 import org.example.transaction.model.entity.LimitOrder;
+import org.example.transaction.model.entity.StockOwned;
 import org.example.transaction.model.payload.BuyStockRequest;
 import org.example.transaction.model.payload.LimitOrderRequest;
 import org.example.transaction.model.payload.SellStockRequest;
@@ -30,6 +33,7 @@ public class AccountInventoryController {
     private final AccountService accountService;
     @Autowired
     private final StockService stockService;
+
 
     @PostMapping(value = "/buy/market")
     public void buyNewStock(@RequestBody BuyStockRequest buyStock)

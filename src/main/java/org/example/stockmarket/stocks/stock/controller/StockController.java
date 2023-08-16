@@ -48,10 +48,8 @@ public class StockController {
     }
 
     @GetMapping(value = "/detailed")
-    public List<StockDTO> getAllDetailedStockData() {
-        return stockService.getAllStocks().stream()
-                .map(StockDTO::new)
-                .collect(Collectors.toList());
+    public List<Stock> getAllDetailedStockData() {
+        return stockService.getAllStocks();
     }
 
 
