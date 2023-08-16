@@ -28,10 +28,6 @@ public class EarningsController {
         return earningsService.findAllEarningsReports();
     }
 
-    @RequestMapping(value = "/stock/{ticker}")
-    public List<EarningsReport> getAllEarningsHistoryFromStock(@PathVariable String ticker) {
-        return stockService.getStockByTickerSymbol(ticker).getEarningsHistory();
-    }
 
     //date is formatted as month_day_year here instead of month/day/year
     @RequestMapping(value = "/date/{date}")

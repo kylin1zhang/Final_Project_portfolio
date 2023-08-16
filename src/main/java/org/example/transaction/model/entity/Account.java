@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.example.transaction.exception.AccountBalanceException;
 import org.example.transaction.utils.CalculateCostBasisAndProfits;
 
 import java.io.Serializable;
@@ -33,14 +32,6 @@ public class Account implements Serializable {
     @Column(name = "total_profits")
     private Double totalProfits;
 
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private Set<StockOwned> stocksOwned;
-
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private List<AccountHistory> accountHistory;
-
     public Account(String username) {
         this.username = username;
         this.accountBalance = 10_000.0;
@@ -55,9 +46,6 @@ public class Account implements Serializable {
     }
 
     public void updateAccountBalance(double amountToAdd){
-        if(this.getAccountBalance() + amountToAdd < 0){
-            throw new AccountBalanceException("Must have more money in account");
-        }
         this.setAccountBalance(Math.round((this.getAccountBalance() + amountToAdd) * 100.00) / 100.00);
     }
 }

@@ -3,8 +3,6 @@ package org.example.transaction.service;
 import lombok.AllArgsConstructor;
 import org.example.stockmarket.stocks.stock.entity.Stock;
 import org.example.stockmarket.stocks.stock.service.StockService;
-import org.example.transaction.exception.AccountBalanceException;
-import org.example.transaction.exception.AccountInventoryException;
 import org.example.transaction.model.entity.Account;
 import org.example.transaction.model.entity.StockOwned;
 import org.example.transaction.model.payload.BuyStockRequest;
@@ -14,24 +12,23 @@ import org.example.transaction.utils.ValidateStockTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.security.auth.login.AccountNotFoundException;
+
 @Service
 @AllArgsConstructor
 public class StockOwnedService {
 
     @Autowired
-    private final StockOwnedRepository stockOwnedRepository;
+    private StockOwnedRepository stockOwnedRepository;
     @Autowired
-    private final AccountService accountService;
+    private AccountService accountService;
     @Autowired
-    private final StockService stockService;
+    private StockService stockService;
 
-    public void buyStock(BuyStockRequest buyStock) {
+    public void buyStock(BuyStockRequest buyStock) throws AccountNotFoundException {
         Account account = accountService.getAccountByName(buyStock.getUsername());
         Stock stock = stockService.getStockByTickerSymbol(buyStock.getTicker());
         StockOwned stockOwned = findStockOwned(account, stock);
-        if (!ValidateStockTransaction.doesAccountHaveEnoughMoney(account, buyStock, this.stockService)) {
-            throw new AccountBalanceException("Account does not have funds for this purchase");
-        }
         if (stockOwned != null) {
             //subtract transaction value from account balance
             accountService.updateBalanceAndSave(account, -1 * (buyStock.getSharesToBuy() * stock.getPrice()));
@@ -48,11 +45,8 @@ public class StockOwnedService {
                 account, buyStock.getTicker(), buyStock.getSharesToBuy(), stockPrice));
     }
 
-    public void sellStock(SellStockRequest sellStock) {
+    public void sellStock(SellStockRequest sellStock) throws AccountNotFoundException {
         Account account = accountService.getAccountByName(sellStock.getUsername());
-        if (!ValidateStockTransaction.doesAccountHaveEnoughStocks(account, sellStock)) {
-            throw new AccountInventoryException("Account does not own enough stocks");
-        }
         Stock stock = stockService.getStockByTickerSymbol(sellStock.getTicker());
         StockOwned stockOwned = findStockOwned(account, stock);
         account.updateTotalProfits(

@@ -25,20 +25,6 @@ public class ReleaseEarningsReport {
     @Autowired
     private final StockService stockService;
 
-    public void handleQuarterlyEarningsReports(List<Stock> stocks, ZonedDateTime marketDate) {
-        stocks.forEach(stock -> {
-            EarningsReport earningsReport = createEarningsReport(stock, marketDate);
-            if(earningsReport.isPositiveEarnings()){
-                stock.increaseInvestorRating();
-                stockService.updateStockInDatabase(stock);
-            }else if(earningsReport.isNegativeEarnings()){
-                stock.decreaseInvestorRating();
-                stockService.updateStockInDatabase(stock);
-            }
-            earningsService.saveEarningsReport(earningsReport);
-        });
-    }
-
     public EarningsReport createEarningsReport(Stock stock, ZonedDateTime marketDate) {
         double estimatedEPS = FindEarningsPerShare.getEstimatedEarningsPerShare();
         double actualEPS = FindEarningsPerShare.getActualEarningsPerShare(stock);

@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.stockmarket.stocks.stock.entity.Stock;
-import org.example.transaction.exception.AccountBalanceException;
 
 import java.io.Serializable;
 
@@ -39,7 +38,6 @@ public class LimitOrder implements Serializable {
         this.sharesToBuy = sharesToBuy;
         this.stock = stock;
         this.limitPrice = limitPrice;
-        if (!validOrderRequest()) throw new AccountBalanceException("Cannot Process Order");
     }
 
     public boolean validOrderRequest() {

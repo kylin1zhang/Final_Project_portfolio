@@ -1,7 +1,6 @@
 package org.example.transaction.service;
 
 import lombok.AllArgsConstructor;
-import org.example.transaction.exception.AccountNotFoundException;
 import org.example.transaction.model.entity.Account;
 import org.example.transaction.model.entity.LimitOrder;
 import org.example.transaction.model.payload.BuyStockRequest;
@@ -45,8 +44,8 @@ public class LimitOrderService {
                             order.getStock().getTicker(),
                             order.getSharesToBuy()));
                     clearAndDeleteLimitOrder(order);
-                } catch (AccountNotFoundException e) {
-                    e.printStackTrace();
+                } catch (javax.security.auth.login.AccountNotFoundException e) {
+                    throw new RuntimeException(e);
                 }
             }
         });

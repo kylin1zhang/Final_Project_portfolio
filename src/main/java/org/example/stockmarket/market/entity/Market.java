@@ -3,8 +3,6 @@ package org.example.stockmarket.market.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.example.stockmarket.market.enums.MarketTrajectory;
-
 import java.time.ZonedDateTime;
 
 @Entity
@@ -29,8 +27,7 @@ public class Market {
     private Double lastMonthAveragePrice;
 
     @Column
-    @Enumerated(EnumType.STRING)
-    private MarketTrajectory marketTrajectory;
+    private String marketTrajectory;
 
     public void increment() {
         ZonedDateTime newDate = getDate().plusHours(1);

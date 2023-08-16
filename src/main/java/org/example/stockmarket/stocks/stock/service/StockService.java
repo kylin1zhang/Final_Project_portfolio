@@ -2,9 +2,6 @@ package org.example.stockmarket.stocks.stock.service;
 
 import lombok.AllArgsConstructor;
 import org.example.stockmarket.stocks.stock.entity.Stock;
-import org.example.stockmarket.stocks.stock.enums.MarketCap;
-import org.example.stockmarket.stocks.stock.enums.Volatility;
-import org.example.stockmarket.stocks.stock.exception.StockNotFoundException;
 import org.example.stockmarket.stocks.stock.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +29,7 @@ public class StockService {
         return stocks.get(0);
     }
 
-    public List<Stock> getAllStocksByMarketCap(MarketCap marketCap) {
+    public List<Stock> getAllStocksByMarketCap(String marketCap) {
         return stockRepository.findAll().stream()
                 .filter(stock -> stock.getMarketCap()
                         .equals(marketCap)).collect(Collectors.toList());
@@ -44,22 +41,17 @@ public class StockService {
                         .equalsIgnoreCase(sector)).collect(Collectors.toList());
     }
 
-    public List<Stock> getAllStocksByVolatility(Volatility volatility) {
+    public List<Stock> getAllStocksByVolatility(String volatility) {
         return stockRepository.findAll().stream()
                 .filter(stock -> stock.getVolatileStock() .equals(volatility))
                 .collect(Collectors.toList());
     }
 
     public Stock getStockByTickerSymbol(String ticker) {
-        return stockRepository.findById(ticker.toUpperCase())
-                .orElseThrow(() -> new StockNotFoundException(
-                        "No stock with ticker symbol " + ticker + " exists"));
+        return stockRepository.findById(ticker.toUpperCase()).get();
     }
 
     public double getStockPriceWithTickerSymbol(String ticker) {
-        if (stockTickerExists(ticker)) {
-            throw new StockNotFoundException("No stock with ticker symbol " + ticker + " exists");
-        }
         return getStockByTickerSymbol(ticker).getPrice();
     }
 

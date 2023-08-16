@@ -1,14 +1,8 @@
 package org.example.transaction.controller;
 
 import lombok.AllArgsConstructor;
-import org.example.stockmarket.stocks.stock.entity.Stock;
 import org.example.stockmarket.stocks.stock.service.StockService;
-import org.example.transaction.exception.AccountBalanceException;
-import org.example.transaction.exception.AccountInventoryException;
-import org.example.transaction.exception.AccountNotFoundException;
-import org.example.transaction.model.entity.Account;
 import org.example.transaction.model.entity.LimitOrder;
-import org.example.transaction.model.entity.StockOwned;
 import org.example.transaction.model.payload.BuyStockRequest;
 import org.example.transaction.model.payload.LimitOrderRequest;
 import org.example.transaction.model.payload.SellStockRequest;
@@ -18,6 +12,7 @@ import org.example.transaction.service.StockOwnedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.security.auth.login.AccountNotFoundException;
 import java.util.List;
 
 @RestController
@@ -26,29 +21,28 @@ import java.util.List;
 public class AccountInventoryController {
 
     @Autowired
-    private final StockOwnedService stockOwnedService;
+    private StockOwnedService stockOwnedService;
     @Autowired
-    private final LimitOrderService limitOrderService;
+    private LimitOrderService limitOrderService;
     @Autowired
-    private final AccountService accountService;
+    private AccountService accountService;
     @Autowired
-    private final StockService stockService;
-
+    private StockService stockService;
 
     @PostMapping(value = "/buy/market")
     public void buyNewStock(@RequestBody BuyStockRequest buyStock)
-            throws AccountNotFoundException, AccountBalanceException {
+            throws javax.security.auth.login.AccountNotFoundException {
         stockOwnedService.buyStock(buyStock);
     }
 
     @PostMapping(value = "/sell")
     public void sellStockInInventory(@RequestBody SellStockRequest sellStock)
-            throws AccountNotFoundException, AccountBalanceException, AccountInventoryException {
+            throws javax.security.auth.login.AccountNotFoundException {
         stockOwnedService.sellStock(sellStock);
     }
 
     @PostMapping(value = "/buy/limit")
-    public List<LimitOrder> limitOrder(@RequestBody LimitOrderRequest request) {
+    public List<LimitOrder> limitOrder(@RequestBody LimitOrderRequest request) throws javax.security.auth.login.AccountNotFoundException {
         limitOrderService.saveLimitOrder(new LimitOrder(
                 accountService.getAccountByName(request.getUsername()),
                 stockService.getStockByTickerSymbol(request.getTicker()),
@@ -59,8 +53,7 @@ public class AccountInventoryController {
     }
 
     @RequestMapping(value = "/orders/get/{username}")
-    public List<LimitOrder> getAllLimitOrdersByUsername(@PathVariable String username) {
+    public List<LimitOrder> getAllLimitOrdersByUsername(@PathVariable String username) throws AccountNotFoundException {
         return limitOrderService.findLimitOrdersByAccount(accountService.getAccountByName(username));
     }
-
 }
