@@ -25,4 +25,10 @@ public class CashController {
                                            @RequestParam("change") int change){
         return cashService.getAllCashWithChange(id,change);
     }
+
+    @PostMapping("/create")
+    public void createCashAccount(@RequestParam("name") String name,
+                                  @RequestParam("change") int change){
+        cashService.createCashAccount(name,change);
+    }
 }
