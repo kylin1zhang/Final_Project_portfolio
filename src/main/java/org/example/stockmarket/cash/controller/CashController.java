@@ -28,8 +28,9 @@ public class CashController {
     }
 
     @PostMapping("/create")
-    public void createCashAccount(@RequestParam("name") String name,
+    public Cash createCashAccount(@RequestParam("name") String name,
                                   @RequestParam("change") int change){
         cashService.createCashAccount(name,change);
+        return cashService.getCashByUsername(name);
     }
 }
