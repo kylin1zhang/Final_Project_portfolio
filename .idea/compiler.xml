@@ -9,11 +9,13 @@
         <outputRelativeToContentRoot value="true" />
         <module name="final_project" />
         <module name="portfolio" />
+        <module name="Final_Project_portfolio" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Final_Project_portfolio" options="-parameters" />
       <module name="final_project" options="-parameters" />
       <module name="portfolio" options="-parameters" />
     </option>
