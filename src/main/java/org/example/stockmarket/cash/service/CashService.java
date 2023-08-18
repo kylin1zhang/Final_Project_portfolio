@@ -19,6 +19,16 @@ public class CashService {
         return cashRepository.findAll();
     }
 
+    public Cash getCashByUsername(String username) {
+        List<Cash> allCash = this.getAllCash();
+        for (Cash cash: allCash) {
+            if (cash.getName().equals(username)) {
+                return cash;
+            }
+        }
+        return null;
+    }
+
     public List<Cash> getAllCashWithChange(int id,int change){
         Cash cash = cashRepository.findById(id).get();
         cash.setBalance(cashRepository.findById(id).get().getBalance()+change);
