@@ -48,4 +48,14 @@ public class CashService {
         cash.setBalance(change);
         cashRepository.save(cash);
     }
+
+    public boolean deleteUser(String name) {
+        Cash lookupCash = this.getCashByUsername(name);
+        if ( lookupCash != null) {
+            int id = lookupCash.getId();
+            cashRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
 }
