@@ -10,6 +10,8 @@ import lombok.Setter;
 import org.example.transaction.utils.CalculateCostBasisAndProfits;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
     Entity for handling the stocks that a user owns
@@ -42,6 +44,10 @@ public class StockOwned implements Serializable {
 
     @Column(name = "cost_basis")
     private Double costBasis;
+
+    @OneToMany(mappedBy = "stockOwned", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OrderBy("timestamp DESC")
+    private List<StockTransaction> transactionHistory = new ArrayList<>();
 
     public StockOwned(Account account, String ticker, int amountOwned, double costBasis) {
         this.account = account;

@@ -5,6 +5,7 @@ import org.example.stockmarket.stocks.stock.entity.Stock;
 import org.example.stockmarket.stocks.stock.service.StockService;
 import org.example.transaction.model.entity.Account;
 import org.example.transaction.model.entity.StockOwned;
+import org.example.transaction.model.entity.StockTransaction;
 import org.example.transaction.model.payload.BuyStockRequest;
 import org.example.transaction.model.payload.SellStockRequest;
 import org.example.transaction.repository.StockOwnedRepository;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountNotFoundException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -34,11 +36,22 @@ public class StockOwnedService {
             //subtract transaction value from account balance
             accountService.updateBalanceAndSave(account, -1 * (buyStock.getSharesToBuy() * stock.getPrice()));
             stockOwned.updateCostBasisAndAmountOwned(buyStock.getSharesToBuy(), stock.getPrice());
+            // 创建交易历史记录
+            StockTransaction transaction = new StockTransaction();
+            transaction.setStockOwned(stockOwned);
+            transaction.setAmount(buyStock.getSharesToBuy());
+            transaction.setTimestamp(LocalDateTime.now());
+            transaction.setBuySell("buy");
+            transaction.setPrice(stock.getPrice());
+
+            stockOwned.getTransactionHistory().add(transaction);
+
             stockOwnedRepository.save(stockOwned);
             return;
         }
         accountService.updateBalanceAndSave(account, -1 * (buyStock.getSharesToBuy() * stock.getPrice()));
         saveNewStockOwned(buyStock, account, stock.getPrice());
+
     }
 
     public void saveNewStockOwned(BuyStockRequest buyStock, Account account, double stockPrice) {
@@ -47,6 +60,7 @@ public class StockOwnedService {
     }
 
     public void sellStock(SellStockRequest sellStock) throws AccountNotFoundException {
+
         Account account = accountService.getAccountByName(sellStock.getUsername());
         Stock stock = stockService.getStockByTickerSymbol(sellStock.getTicker());
         StockOwned stockOwned = findStockOwned(account, stock);
@@ -59,8 +73,20 @@ public class StockOwnedService {
             clearAndDeleteStockOwned(stockOwned);
         } else {
             stockOwned.setAmountOwned(stockOwned.getAmountOwned() - sellStock.getSharesToSell());
+
+            StockTransaction transaction = new StockTransaction();
+            transaction.setStockOwned(stockOwned);
+            transaction.setAmount(sellStock.getSharesToSell());
+            transaction.setTimestamp(LocalDateTime.now());
+            transaction.setBuySell("sell");
+            transaction.setPrice(stock.getPrice());
+
+            stockOwned.getTransactionHistory().add(transaction);
+
             stockOwnedRepository.save(stockOwned);
         }
+
+
     }
 
     public StockOwned findStockOwned(Account account, Stock stock) {
