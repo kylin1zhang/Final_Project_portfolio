@@ -35,7 +35,8 @@ public class CashController {
     }
 
     @DeleteMapping("/delete")
-    public boolean createCashAccount(@RequestParam("name") String name){
-        return cashService.deleteUser(name);
+    public String createCashAccount(@RequestParam("name") String name){
+        cashService.deleteUser(name);
+        return name;
     }
 }
