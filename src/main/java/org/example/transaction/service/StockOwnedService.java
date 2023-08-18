@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountNotFoundException;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -68,6 +69,9 @@ public class StockOwnedService {
                 .filter(stockOwned -> stockOwned.getAccount().getUsername().equals(account.getUsername()))
                 .findFirst()
                 .orElse(null);
+    }
+    public List<StockOwned> findStocksOwnedByAccount(Account account) {
+        return stockOwnedRepository.findAll();
     }
 
     public void clearAndDeleteStockOwned(StockOwned stockOwned) {
