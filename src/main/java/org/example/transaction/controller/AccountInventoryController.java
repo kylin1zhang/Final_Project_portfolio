@@ -7,6 +7,7 @@ import org.example.transaction.model.entity.StockOwned;
 import org.example.transaction.model.entity.StockTransaction;
 import org.example.transaction.model.payload.BuyStockRequest;
 import org.example.transaction.model.payload.SellStockRequest;
+import org.example.transaction.model.payload.StockOwnedBasicDTO;
 import org.example.transaction.model.payload.StockTransactionDTO;
 import org.example.transaction.service.AccountService;
 import org.example.transaction.service.StockOwnedService;
@@ -42,10 +43,21 @@ public class AccountInventoryController {
     }
 
     @RequestMapping(value = "/stock-owned/get/{username}")
-    public List<StockOwned> getAllStockOwnedByUsername(@PathVariable String username) throws AccountNotFoundException {
+    public List<StockOwnedBasicDTO> getStockOwnedByUsername(@PathVariable String username) throws AccountNotFoundException {
         Account account = accountService.getAccountByName(username);
         List<StockOwned> stockOwned = stockOwnedService.findStocksOwnedByAccount(account);
-        return stockOwned;
+
+        List<StockOwnedBasicDTO> result = new ArrayList<>();
+
+        for (StockOwned owned : stockOwned) {
+            StockOwnedBasicDTO dto = new StockOwnedBasicDTO();
+            dto.setTicker(owned.getTicker());
+            dto.setAmountOwned(owned.getAmountOwned());
+            dto.setCostBasis(owned.getCostBasis());
+            result.add(dto);
+        }
+
+        return result;
     }
 
     @RequestMapping(value = "/stock-owned/history/{username}")
