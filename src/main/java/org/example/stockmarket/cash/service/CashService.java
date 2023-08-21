@@ -1,11 +1,14 @@
 package org.example.stockmarket.cash.service;
 
 import org.example.stockmarket.cash.entity.Cash;
+import org.example.stockmarket.cash.entity.CashModified;
+import org.example.stockmarket.cash.repository.CashModifiedRepository;
 import org.example.stockmarket.cash.repository.CashRepository;
 import org.example.stockmarket.stocks.stock.entity.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +17,9 @@ public class CashService {
 
     @Autowired
     CashRepository cashRepository;
+
+    @Autowired
+    CashModifiedRepository cashModifiedRepository;
 
     public List<Cash> getAllCash() {
         return cashRepository.findAll();
@@ -29,19 +35,18 @@ public class CashService {
         return null;
     }
 
-    public List<Cash> getAllCashWithChange(int id,int change){
+    public List<Cash> getAllCashWithChange(int id,float change){
         Cash cash = cashRepository.findById(id).get();
         cash.setBalance(cashRepository.findById(id).get().getBalance()+change);
         cashRepository.save(cash);
         return cashRepository.findAll();
     }
 
-    public void createCashAccount(String name,int change){
+    public void createCashAccount(String name,float change){
         if(!cashRepository.findByName(name).isEmpty()){
             throw new NullPointerException("Cannot Create Account With existing Username");
         }
         Cash cash = new Cash();
-        cash.setId((int) (cashRepository.count()+1));
         cash.setCreated(new Date());
         cash.setModified(new Date());
         cash.setName(name);
@@ -57,5 +62,68 @@ public class CashService {
             return true;
         }
         return false;
+    }
+
+    public void createCashModified(String name,Date modified,float balance){
+        CashModified cashModified = new CashModified();
+        cashModified.setName(name);
+        cashModified.setModified(modified);
+        cashModified.setBalance(balance);
+        cashModifiedRepository.save(cashModified);
+    }
+
+    public List<CashModified> getAllCashModified() {
+        return cashModifiedRepository.findAll();
+    }
+
+    public List<List<CashModified>> getTotalCashWithChange(String name,float change){
+        Cash cash = this.getCashByUsername(name);
+        cash.setBalance(cash.getBalance()+change);
+        cashRepository.save(cash);
+        List<CashModified> expendList = new ArrayList<>();
+        List<CashModified> incomList = new ArrayList<>();
+        List<List<CashModified>> cashList = new ArrayList<>();
+        List<CashModified> allCash = cashModifiedRepository.findAll();
+
+        for (CashModified cashModified: allCash) {
+            boolean flag = false;
+            CashModified modified = new CashModified();
+            if(cashModified.getBalance()>=0){
+                for (int i=0;i<incomList.size();i++) {
+                    if(cashModified.getName().equals(incomList.get(i).getName())){
+                        modified.setName(cashModified.getName());
+                        modified.setModified(cashModified.getModified());
+                       modified.setBalance(incomList.get(i).getBalance()+cashModified.getBalance());
+                       incomList.set(i,modified);
+                       flag=true;
+                    }
+                }
+                if(!flag){
+                    modified.setName(cashModified.getName());
+                    modified.setModified(cashModified.getModified());
+                    modified.setBalance(cashModified.getBalance());
+                    incomList.add(modified);
+                }
+            }else {
+                for (int i=0;i<expendList.size();i++) {
+                    if(cashModified.getName().equals(expendList.get(i).getName())){
+                        modified.setName(cashModified.getName());
+                        modified.setModified(cashModified.getModified());
+                        modified.setBalance(Math.abs(expendList.get(i).getBalance()+cashModified.getBalance()));
+                        expendList.set(i,modified);
+                        flag=true;
+                    }
+                }
+                if(!flag){
+                    modified.setName(cashModified.getName());
+                    modified.setModified(cashModified.getModified());
+                    modified.setBalance(Math.abs(cashModified.getBalance()));
+                    expendList.add(modified);
+                }
+            }
+        }
+        cashList.add(expendList);
+        cashList.add(incomList);
+        return cashList;
     }
 }

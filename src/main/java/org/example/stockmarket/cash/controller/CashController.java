@@ -1,11 +1,14 @@
 package org.example.stockmarket.cash.controller;
 
 import org.example.stockmarket.cash.entity.Cash;
+import org.example.stockmarket.cash.entity.CashModified;
+import org.example.stockmarket.cash.repository.CashRepository;
 import org.example.stockmarket.cash.service.CashService;
 import org.example.stockmarket.stocks.stock.entity.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -23,13 +26,13 @@ public class CashController {
 
     @PostMapping
     public List<Cash> getAllCashWithChange(@RequestParam("id") int id,
-                                           @RequestParam("change") int change){
+                                           @RequestParam("change") float change){
         return cashService.getAllCashWithChange(id,change);
     }
 
     @PostMapping("/create")
     public Cash createCashAccount(@RequestParam("name") String name,
-                                  @RequestParam("change") int change){
+                                  @RequestParam("change") float change){
         cashService.createCashAccount(name,change);
         return cashService.getCashByUsername(name);
     }
@@ -38,5 +41,17 @@ public class CashController {
     public String createCashAccount(@RequestParam("name") String name){
         cashService.deleteUser(name);
         return name;
+    }
+
+    @GetMapping("/cashModified")
+    public List<CashModified> getAllCashModified() {
+        return cashService.getAllCashModified();
+    }
+
+    @PostMapping("/total")
+    public List<List<CashModified>> cashModified(@RequestParam("name") String name,
+                                                 @RequestParam("change") float balance){
+        cashService.createCashModified(name,new Date(),balance);
+        return cashService.getTotalCashWithChange(name,balance);
     }
 }
