@@ -79,11 +79,13 @@ public class CashService {
         Cash cash = this.getCashByUsername(name);
         cash.setBalance(cash.getBalance()+change);
         cashRepository.save(cash);
+        return returntotal(cashModifiedRepository.findAll());
+    }
+
+    public List<List<CashModified>> returntotal(List<CashModified> allCash){
         List<CashModified> expendList = new ArrayList<>();
         List<CashModified> incomList = new ArrayList<>();
         List<List<CashModified>> cashList = new ArrayList<>();
-        List<CashModified> allCash = cashModifiedRepository.findAll();
-
         for (CashModified cashModified: allCash) {
             boolean flag = false;
             CashModified modified = new CashModified();
@@ -92,9 +94,9 @@ public class CashService {
                     if(cashModified.getName().equals(incomList.get(i).getName())){
                         modified.setName(cashModified.getName());
                         modified.setModified(cashModified.getModified());
-                       modified.setBalance(incomList.get(i).getBalance()+cashModified.getBalance());
-                       incomList.set(i,modified);
-                       flag=true;
+                        modified.setBalance(incomList.get(i).getBalance()+cashModified.getBalance());
+                        incomList.set(i,modified);
+                        flag=true;
                     }
                 }
                 if(!flag){
