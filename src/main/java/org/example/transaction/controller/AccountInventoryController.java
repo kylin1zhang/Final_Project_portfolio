@@ -1,7 +1,7 @@
 package org.example.transaction.controller;
 
 import lombok.AllArgsConstructor;
-import org.example.stockmarket.stocks.stock.service.StockService;
+import org.example.stockmarket.stock.service.StockService;
 import org.example.transaction.model.entity.Account;
 import org.example.transaction.model.entity.StockOwned;
 import org.example.transaction.model.entity.StockTransaction;

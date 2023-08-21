@@ -1,4 +1,4 @@
-package org.example.stockmarket.stocks.stock.entity;
+package org.example.stockmarket.stock.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
