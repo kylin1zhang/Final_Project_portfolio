@@ -1,9 +1,7 @@
 package org.example.stockmarket.cash.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +20,7 @@ import java.util.Date;
 public class CashModified {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
