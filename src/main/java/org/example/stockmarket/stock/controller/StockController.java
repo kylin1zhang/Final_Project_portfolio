@@ -1,9 +1,9 @@
-package org.example.stockmarket.stocks.stock.controller;
+package org.example.stockmarket.stock.controller;
 
 import lombok.AllArgsConstructor;
 //import org.example.stockmarket.indexfund.utils.Capitalize;
-import org.example.stockmarket.stocks.stock.entity.Stock;
-import org.example.stockmarket.stocks.stock.service.StockService;
+import org.example.stockmarket.stock.entity.Stock;
+import org.example.stockmarket.stock.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

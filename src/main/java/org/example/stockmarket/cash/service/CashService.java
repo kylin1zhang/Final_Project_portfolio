@@ -2,7 +2,6 @@ package org.example.stockmarket.cash.service;
 
 import org.example.stockmarket.cash.entity.Cash;
 import org.example.stockmarket.cash.repository.CashRepository;
-import org.example.stockmarket.stocks.stock.entity.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
