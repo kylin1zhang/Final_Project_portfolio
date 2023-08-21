@@ -60,8 +60,9 @@ public class AccountInventoryController {
         return result;
     }
 
-    @RequestMapping(value = "/stock-owned/history/{username}")
-    public List<StockTransactionDTO> getStockHistoryByUsername(@PathVariable String username) throws AccountNotFoundException {
+    @RequestMapping(value = "/stock-owned/history/{username}/{ticker}")
+    public List<StockTransactionDTO> getStockHistoryByUsername(@PathVariable String username,
+                                                               @PathVariable String ticker) throws AccountNotFoundException {
         Account account = accountService.getAccountByName(username);
         List<StockOwned> stockOwned = stockOwnedService.findStocksOwnedByAccount(account);
 
@@ -70,13 +71,15 @@ public class AccountInventoryController {
         for (StockOwned owned : stockOwned) {
             String stockName = owned.getTicker(); // 获取股票名称
             for (StockTransaction transaction : owned.getTransactionHistory()) {
-                StockTransactionDTO dto = new StockTransactionDTO();
-                dto.setStockName(stockName);
-                dto.setAmount(transaction.getAmount());
-                dto.setTimestamp(transaction.getTimestamp());
-                dto.setBuySell(transaction.getBuySell());
-                dto.setPrice(transaction.getPrice());
-                history.add(dto);
+                if (ticker.equalsIgnoreCase(stockName)) {
+                    StockTransactionDTO dto = new StockTransactionDTO();
+                    dto.setStockName(stockName);
+                    dto.setAmount(transaction.getAmount());
+                    dto.setTimestamp(transaction.getTimestamp());
+                    dto.setBuySell(transaction.getBuySell());
+                    dto.setPrice(transaction.getPrice());
+                    history.add(dto);
+                }
             }
         }
 
