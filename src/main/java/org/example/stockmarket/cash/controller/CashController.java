@@ -4,7 +4,6 @@ import org.example.stockmarket.cash.entity.Cash;
 import org.example.stockmarket.cash.entity.CashModified;
 import org.example.stockmarket.cash.repository.CashRepository;
 import org.example.stockmarket.cash.service.CashService;
-import org.example.stockmarket.stocks.stock.entity.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

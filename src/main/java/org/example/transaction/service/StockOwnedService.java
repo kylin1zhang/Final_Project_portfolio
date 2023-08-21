@@ -1,15 +1,14 @@
 package org.example.transaction.service;
 
 import lombok.AllArgsConstructor;
-import org.example.stockmarket.stocks.stock.entity.Stock;
-import org.example.stockmarket.stocks.stock.service.StockService;
+import org.example.stockmarket.stock.entity.Stock;
+import org.example.stockmarket.stock.service.StockService;
 import org.example.transaction.model.entity.Account;
 import org.example.transaction.model.entity.StockOwned;
 import org.example.transaction.model.entity.StockTransaction;
 import org.example.transaction.model.payload.BuyStockRequest;
 import org.example.transaction.model.payload.SellStockRequest;
 import org.example.transaction.repository.StockOwnedRepository;
-import org.example.transaction.utils.ValidateStockTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
