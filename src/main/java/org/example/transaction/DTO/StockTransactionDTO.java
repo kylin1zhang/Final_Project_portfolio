@@ -1,4 +1,4 @@
-package org.example.transaction.model.payload;
+package org.example.transaction.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
