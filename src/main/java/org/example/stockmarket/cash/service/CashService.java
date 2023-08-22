@@ -7,6 +7,7 @@ import org.example.stockmarket.cash.repository.CashRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -76,10 +77,24 @@ public class CashService {
     }
 
     public List<List<CashModified>> getTotalCashWithChange(String name,float change){
-        Cash cash = this.getCashByUsername(name);
-        cash.setBalance(cash.getBalance()+change);
+        Cash cash = new Cash();
+        if(!cashRepository.findByName(name).isEmpty()){
+            cash = this.getCashByUsername(name);
+            cash.setBalance(cash.getBalance()+change);
+        }else {
+            cash.setName(name);
+            cash.setCreated(new Date());
+            cash.setModified(new Date());
+            cash.setBalance(change);
+        }
         cashRepository.save(cash);
         return returntotal(cashModifiedRepository.findAll());
+    }
+
+    public List<List<CashModified>> findHistory(){
+        List<CashModified> cashModifiedList = cashModifiedRepository.findHistory(LocalDateTime.now().minusDays(7),new Date());
+        System.out.println();
+        return returntotal(cashModifiedList);
     }
 
     public List<List<CashModified>> returntotal(List<CashModified> allCash){

@@ -7,6 +7,7 @@ import org.example.stockmarket.cash.service.CashService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.processing.Generated;
 import java.util.Date;
 import java.util.List;
 
@@ -49,8 +50,13 @@ public class CashController {
 
     @PostMapping("/total")
     public List<List<CashModified>> cashModified(@RequestParam("name") String name,
-                                                 @RequestParam("change") float balance){
-        cashService.createCashModified(name,new Date(),balance);
-        return cashService.getTotalCashWithChange(name,balance);
+                                                 @RequestParam("change") float change){
+        cashService.createCashModified(name,new Date(),change);
+        return cashService.getTotalCashWithChange(name,change);
+    }
+
+    @GetMapping("/history")
+    public List<List<CashModified>> findHistory(){
+        return cashService.findHistory();
     }
 }
