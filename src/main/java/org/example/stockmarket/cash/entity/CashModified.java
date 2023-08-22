@@ -20,6 +20,7 @@ import java.util.Date;
 public class CashModified {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
