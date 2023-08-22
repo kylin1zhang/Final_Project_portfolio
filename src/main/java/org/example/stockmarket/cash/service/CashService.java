@@ -93,14 +93,30 @@ public class CashService {
 
     public List<List<CashModified>> findHistory(){
         List<CashModified> cashModifiedList = cashModifiedRepository.findHistory(LocalDateTime.now().minusDays(7),new Date());
-        System.out.println();
         return returntotal(cashModifiedList);
     }
 
     public List<List<CashModified>> returntotal(List<CashModified> allCash){
         List<CashModified> expendList = new ArrayList<>();
         List<CashModified> incomList = new ArrayList<>();
-        List<List<CashModified>> cashList = new ArrayList<>();
+        List<List<CashModified>> cashModifiedList = new ArrayList<>();
+        List<Cash> cashList = cashRepository.findAll();
+        if(!cashList.isEmpty()){
+            for (Cash cash : cashList) {
+                CashModified modified = new CashModified();
+                if(cash.getBalance()>=0){
+                    modified.setName(cash.getName());
+                    modified.setModified(cash.getModified());
+                    modified.setBalance(cash.getBalance());
+                    incomList.add(modified);
+                }else {
+                    modified.setName(cash.getName());
+                    modified.setModified(cash.getModified());
+                    modified.setBalance(Math.abs(cash.getBalance()));
+                    expendList.add(modified);
+                }
+            }
+        }
         for (CashModified cashModified: allCash) {
             boolean flag = false;
             CashModified modified = new CashModified();
@@ -117,7 +133,7 @@ public class CashService {
                 if(!flag){
                     modified.setName(cashModified.getName());
                     modified.setModified(cashModified.getModified());
-                    modified.setBalance(cashModified.getBalance());
+                    modified.setBalance(Math.abs(cashModified.getBalance()));
                     incomList.add(modified);
                 }
             }else {
@@ -125,7 +141,7 @@ public class CashService {
                     if(cashModified.getName().equals(expendList.get(i).getName())){
                         modified.setName(cashModified.getName());
                         modified.setModified(cashModified.getModified());
-                        modified.setBalance(Math.abs(expendList.get(i).getBalance()+cashModified.getBalance()));
+                        modified.setBalance(expendList.get(i).getBalance()+Math.abs(cashModified.getBalance()));
                         expendList.set(i,modified);
                         flag=true;
                     }
@@ -138,8 +154,8 @@ public class CashService {
                 }
             }
         }
-        cashList.add(expendList);
-        cashList.add(incomList);
-        return cashList;
+        cashModifiedList.add(expendList);
+        cashModifiedList.add(incomList);
+        return cashModifiedList;
     }
 }
