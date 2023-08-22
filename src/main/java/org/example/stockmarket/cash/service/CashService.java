@@ -47,11 +47,13 @@ public class CashService {
             throw new NullPointerException("Cannot Create Account With existing Username");
         }
         Cash cash = new Cash();
-        cash.setCreated(new Date());
-        cash.setModified(new Date());
+        Date date = new Date();
+        cash.setCreated(date);
+        cash.setModified(date);
         cash.setName(name);
         cash.setBalance(change);
         cashRepository.save(cash);
+        this.createCashModified(name, date, change);
     }
 
     public boolean deleteUser(String name) {
