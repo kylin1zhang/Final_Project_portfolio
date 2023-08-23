@@ -53,7 +53,6 @@ public class CashService {
         cash.setName(name);
         cash.setBalance(change);
         cashRepository.save(cash);
-        this.createCashModified(name, date, change);
     }
 
     public boolean deleteUser(String name) {
