@@ -1,0 +1,82 @@
+@startuml
+
+!define ENTITY class
+!define SERVICE class
+!define CONTROLLER class
+!define DTO class
+!define REPOSITORY class
+
+package org.example.stockmarket.stock.configuration {
+    ENTITY StockConfiguration
+}
+
+package org.example.stockmarket.stock.controller {
+    CONTROLLER StockController
+}
+
+package org.example.stockmarket.stock.defaults {
+    ENTITY DefaultStockPrices
+    ENTITY DefaultStocksList
+}
+
+package org.example.stockmarket.stock.DTO {
+    DTO StockDTO
+    DTO StockPriceHistoryDTO
+    DTO StockSummaryDTO
+}
+
+package org.example.stockmarket.stock.entity {
+    ENTITY Stock
+    ENTITY StockPriceHistory
+    ENTITY StockPriceHistoryId
+}
+
+package org.example.stockmarket.stock.enums {
+    ENUM InvestorRating
+    ENUM MarketCap
+    ENUM Volatility
+}
+
+package org.example.stockmarket.stock.repository {
+    REPOSITORY StockRepository
+}
+
+package org.example.stockmarket.stock.service {
+    SERVICE StockService
+}
+
+StockConfiguration --> StockService
+
+StockController --> StockService
+
+DefaultStockPrices --> MarketCap
+
+
+DefaultStocksList --> Stock
+DefaultStocksList --> MarketCap
+DefaultStocksList --> Volatility
+DefaultStocksList --> InvestorRating
+
+StockDTO --> Stock
+StockDTO --> StockPriceHistoryDTO
+
+StockSummaryDTO --> Stock
+
+StockPriceHistory --> Stock
+StockPriceHistory --> StockPriceHistoryId
+
+
+StockPriceHistoryId --> Stock
+
+Stock --> MarketCap
+Stock --> Volatility
+Stock --> InvestorRating
+
+StockService --> StockRepository
+
+@enduml
+
+
+
+
+

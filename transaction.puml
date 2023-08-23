@@ -1,0 +1,60 @@
+@startuml
+
+!define ENTITY class
+!define SERVICE class
+!define CONTROLLER class
+!define REPOSITORY class
+
+package org.example.transaction.controller {
+    CONTROLLER AccountController
+    CONTROLLER AccountInventoryController
+}
+
+package org.example.transaction.entity {
+    ENTITY Account
+    ENTITY StockOwned
+    ENTITY StockTransaction
+}
+
+package org.example.transaction.payload {
+    ENTITY AccountTransaction
+    ENTITY BuyStockRequest
+    ENTITY SellStockRequest
+}
+
+package org.example.transaction.DTO {
+    ENTITY StockOwnedBasicDTO
+    ENTITY StockTransactionDTO
+}
+
+package org.example.transaction.repository {
+    REPOSITORY AccountRepository
+    REPOSITORY StockOwnedRepository
+}
+
+package org.example.transaction.service {
+    SERVICE AccountService
+    SERVICE StockOwnedService
+}
+
+AccountController --> AccountService
+AccountInventoryController --> StockOwnedService
+AccountInventoryController --> AccountService
+
+Account --> StockOwned
+StockOwned --> StockTransaction
+
+AccountService --> AccountRepository
+AccountService --> StockOwnedService
+
+StockOwnedService --> StockOwnedRepository
+StockOwnedService --> AccountService
+
+StockOwned --> StockTransactionDTO
+StockOwned --> StockOwnedBasicDTO
+
+AccountTransaction --> Account
+BuyStockRequest --> Account
+SellStockRequest --> Account
+
+@enduml
