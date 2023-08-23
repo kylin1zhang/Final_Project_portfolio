@@ -31,11 +31,11 @@ public class StockOwnedService {
         Account account = accountService.getAccountByName(buyStock.getUsername());
         Stock stock = stockService.getStockByTickerSymbol(buyStock.getTicker());
         StockOwned stockOwned = findStockOwned(account, stock);
+
         if (stockOwned != null) {
-            //subtract transaction value from account balance
-            accountService.updateBalanceAndSave(account, -1 * (buyStock.getSharesToBuy() * stock.getPrice()));
-            stockOwned.updateCostBasisAndAmountOwned(buyStock.getSharesToBuy(), stock.getPrice());
-            // 创建交易历史记录
+            // Existing stock ownership, update the stockOwned entity and add transaction
+            // ... (your existing code)
+
             StockTransaction transaction = new StockTransaction();
             transaction.setStockOwned(stockOwned);
             transaction.setAmount(buyStock.getSharesToBuy());
@@ -44,14 +44,28 @@ public class StockOwnedService {
             transaction.setPrice(stock.getPrice());
 
             stockOwned.getTransactionHistory().add(transaction);
-
-            stockOwnedRepository.save(stockOwned);
+            stockOwnedRepository.save(stockOwned);  // Make sure to save the updated stockOwned
             return;
         }
-        accountService.updateBalanceAndSave(account, -1 * (buyStock.getSharesToBuy() * stock.getPrice()));
-        saveNewStockOwned(buyStock, account, stock.getPrice());
 
+        // New stock ownership, create a new stockOwned entity
+        // ... (your existing code)
+
+        // Create a new stockOwned entity and add the transaction
+        stockOwned = new StockOwned(account, buyStock.getTicker(), buyStock.getSharesToBuy(), stock.getPrice());
+
+        StockTransaction transaction = new StockTransaction();
+        transaction.setStockOwned(stockOwned);
+        transaction.setAmount(buyStock.getSharesToBuy());
+        transaction.setTimestamp(LocalDateTime.now());
+        transaction.setBuySell("buy");
+        transaction.setPrice(stock.getPrice());
+
+        stockOwned.getTransactionHistory().add(transaction);
+
+        stockOwnedRepository.save(stockOwned);
     }
+
 
     public void saveNewStockOwned(BuyStockRequest buyStock, Account account, double stockPrice) {
         stockOwnedRepository.save(new StockOwned(
